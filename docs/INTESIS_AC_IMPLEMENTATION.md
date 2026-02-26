@@ -124,9 +124,16 @@ See `docs/THINGSBOARD_AC_WIDGET.md` for:
 
 ### Hardware Setup:
 1. Connect Intesis gateway to same network as ESP32
-2. Default IP: 192.168.1.100
-3. Default Port: 5000
+2. Default IP: 192.168.1.100 (configurable via app)
+3. Default Port: 5000 (configurable via app)
 4. Protocol: TCP ASCII
+
+### Configuration Flow:
+1. **Initial Setup**: App sets default IP (192.168.1.100:5000)
+2. **Change IP**: User enters new IP in AC Config dialog (tap gear icon)
+3. **Save**: App updates ThingsBoard shared attributes (`intesis_gateway_ip`, `intesis_gateway_port`)
+4. **Apply**: ESP32 receives attribute update via MQTT and reconnects to new IP
+5. **Verify**: App shows online status when connected
 
 ### ASCII Commands:
 ```

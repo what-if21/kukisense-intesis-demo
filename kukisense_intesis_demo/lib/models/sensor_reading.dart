@@ -35,6 +35,35 @@ class SensorReading {
     );
   }
 
+  // Parse from ThingsBoard telemetry response
+  factory SensorReading.fromThingsBoard(Map<String, dynamic> data) {
+    double getValue(String key) {
+      if (data.containsKey(key) && data[key] is List && data[key].isNotEmpty) {
+        return (data[key][0]['value'] ?? 0.0).toDouble();
+      }
+      return 0.0;
+    }
+
+    int getIntValue(String key) {
+      if (data.containsKey(key) && data[key] is List && data[key].isNotEmpty) {
+        return (data[key][0]['value'] ?? 0).toInt();
+      }
+      return 0;
+    }
+
+    return SensorReading(
+      temperature: getValue('temperature'),
+      humidity: getValue('humidity'),
+      co2: getIntValue('co2'),
+      pm25: getValue('pm25'),
+      pm10: getValue('pm10'),
+      pm1: getValue('pm1'),
+      pm4: getValue('pm4'),
+      tvoc: getValue('tvoc'),
+      timestamp: DateTime.now(),
+    );
+  }
+
   String getStatus(String sensor) {
     switch (sensor) {
       case 'temperature':

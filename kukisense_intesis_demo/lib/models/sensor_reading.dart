@@ -1,0 +1,56 @@
+class SensorReading {
+  final double temperature;
+  final double humidity;
+  final int co2;
+  final double pm25;
+  final double pm10;
+  final double pm1;
+  final double pm4;
+  final double tvoc;
+  final DateTime timestamp;
+
+  SensorReading({
+    required this.temperature,
+    required this.humidity,
+    required this.co2,
+    required this.pm25,
+    required this.pm10,
+    required this.pm1,
+    required this.pm4,
+    required this.tvoc,
+    required this.timestamp,
+  });
+
+  factory SensorReading.fromJson(Map<String, dynamic> json) {
+    return SensorReading(
+      temperature: (json['temperature'] ?? 0.0).toDouble(),
+      humidity: (json['humidity'] ?? 0.0).toDouble(),
+      co2: (json['co2'] ?? 0).toInt(),
+      pm25: (json['pm25'] ?? 0.0).toDouble(),
+      pm10: (json['pm10'] ?? 0.0).toDouble(),
+      pm1: (json['pm1'] ?? 0.0).toDouble(),
+      pm4: (json['pm4'] ?? 0.0).toDouble(),
+      tvoc: (json['tvoc'] ?? 0.0).toDouble(),
+      timestamp: DateTime.now(),
+    );
+  }
+
+  String getStatus(String sensor) {
+    switch (sensor) {
+      case 'temperature':
+        if (temperature > 30) return 'critical';
+        if (temperature > 26) return 'warning';
+        return 'good';
+      case 'co2':
+        if (co2 > 1500) return 'critical';
+        if (co2 > 1000) return 'warning';
+        return 'good';
+      case 'pm25':
+        if (pm25 > 55) return 'critical';
+        if (pm25 > 35) return 'warning';
+        return 'good';
+      default:
+        return 'good';
+    }
+  }
+}

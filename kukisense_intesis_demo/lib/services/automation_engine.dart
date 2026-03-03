@@ -82,4 +82,22 @@ class AutomationEngine extends ChangeNotifier {
     rule.enabled = !rule.enabled;
     saveRules();
   }
+
+  void addRule(AutomationRule rule) {
+    _rules.add(rule);
+    saveRules();
+  }
+
+  void updateRule(AutomationRule rule) {
+    final index = _rules.indexWhere((r) => r.id == rule.id);
+    if (index != -1) {
+      _rules[index] = rule;
+      saveRules();
+    }
+  }
+
+  void deleteRule(String id) {
+    _rules.removeWhere((r) => r.id == id);
+    saveRules();
+  }
 }

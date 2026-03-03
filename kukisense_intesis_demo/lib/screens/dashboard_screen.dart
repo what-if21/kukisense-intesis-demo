@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/sensor_reading.dart';
 import '../services/kukisense_api.dart';
 import '../services/automation_engine.dart';
+import 'automation_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -47,7 +48,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Kukisense Dashboard')),
+      appBar: AppBar(
+        title: const Text('Kukisense Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.auto_mode),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AutomationScreen()),
+            ),
+          ),
+        ],
+      ),
       body: _isLoading ? const Center(child: CircularProgressIndicator())
         : _reading == null ? const Center(child: Text('Failed to load sensor data'))
         : RefreshIndicator(

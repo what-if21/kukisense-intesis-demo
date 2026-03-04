@@ -86,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           _buildSensorRow('CO2', '${_reading!.co2} ppm', _reading!.getStatus('co2')),
                           _buildSensorRow('PM2.5', '${_reading!.pm25.toStringAsFixed(1)} µg/m³', _reading!.getStatus('pm25')),
                           _buildSensorRow('PM10', '${_reading!.pm10.toStringAsFixed(1)} µg/m³', 'good'),
-                          _buildSensorRow('TVOC', '${_reading!.tvoc.toStringAsFixed(1)} ppb', 'good'),
+                          _buildSensorRow('TVOC (Formaldehyde)', '${_reading!.tvoc.toStringAsFixed(1)} µg/m³', 'good'),
                         ],
                       ),
                     ),

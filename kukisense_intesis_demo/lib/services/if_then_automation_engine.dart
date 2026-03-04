@@ -28,8 +28,7 @@ class IfThenAutomationEngine extends ChangeNotifier {
       _rules = getDefaultIfThenRules();
       await saveRules();
     }
-    // Auto-login to ThingsBoard
-    await _api.login();
+    // Note: Login should be done from LoginScreen before calling initialize
     start();
   }
 

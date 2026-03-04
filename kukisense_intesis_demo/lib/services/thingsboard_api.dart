@@ -5,9 +5,9 @@ import '../models/sensor_reading.dart';
 class ThingsBoardApi {
   static const String baseUrl = 'https://dashboard.what-if.sg';
 
-  // Device IDs
-  static const String iaqDeviceId = 'acd184f0-dc97-11f0-9bc1-e37c1229cd44'; // Kukisense IAQ sensor
-  static const String acDeviceId = 'your-ac-device-id'; // AC control device (hazelnut)
+  // Device IDs - same device for both IAQ sensor and AC control
+  static const String iaqDeviceId = 'acd184f0-dc97-11f0-9bc1-e37c1229cd44';
+  static const String acDeviceId = 'acd184f0-dc97-11f0-9bc1-e37c1229cd44';
 
   // Singleton pattern
   static final ThingsBoardApi _instance = ThingsBoardApi._internal();

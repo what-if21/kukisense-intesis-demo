@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dashboard_screen.dart';
 import '../services/thingsboard_api.dart';
 
@@ -17,8 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     setState(() => _isLoading = true);
     
-    final api = ThingsBoardApi();
-    final success = await api.login();
+    final api = context.read<ThingsBoardApi>();
+    final success = await api.login(
+      _usernameController.text,
+      _passwordController.text,
+    );
+    
+    setState(() => _isLoading = false);
     
     setState(() => _isLoading = false);
     

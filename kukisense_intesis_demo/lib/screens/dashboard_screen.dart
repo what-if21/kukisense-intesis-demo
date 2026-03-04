@@ -43,26 +43,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _fetchData() async {
-    final api = context.read<ThingsBoardApi>();
-    final reading = await api.getIaqTelemetry();
-    final acStatus = await api.getAcStatus();
-    
-    if (mounted) {
-      setState(() {
-        _reading = reading;
-        _acStatus = acStatus;
-        _isLoading = false;
-        
-        // Update AC state from telemetry
-        if (acStatus != null) {
-          _acPower = _getAcValue(acStatus, 'ac_power') == true;
-          _acMode = _getAcValue(acStatus, 'ac_mode')?.toString() ?? 'cool';
-          _acSetpoint = (_getAcValue(acStatus, 'ac_setpoint') ?? 24).toDouble();
-          _acFan = _getAcValue(acStatus, 'ac_fan')?.toString() ?? 'auto';
+    try {
+      final api = context.read<ThingsBoardApi>();
+      final reading = await api.getIaqTelemetry();
+      final acStatus = await api.getAcStatus();
+      
+      if (mounted) {
+        setState(() {
+          _reading = reading;
+          _acStatus = acStatus;
+          _isLoading = false;
+          
+          // Update AC state from telemetry
+          if (acStatus != null) {
+            _acPower = _getAcValue(acStatus, 'ac_power') == true;
+            _acMode = _getAcValue(acStatus, 'ac_mode')?.toString() ?? 'cool';
+            _acSetpoint = (_getAcValue(acStatus, 'ac_setpoint') ?? 24).toDouble();
+            _acFan = _getAcValue(acStatus, 'ac_fan')?.toString() ?? 'auto';
+          }
+        });
+        if (reading != null) {
+          context.read<IfThenAutomationEngine>().updateSensorData(reading);
         }
-      });
-      if (reading != null) {
-        context.read<IfThenAutomationEngine>().updateSensorData(reading);
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      if (mounted) {
+        setState(() => _isLoading = false);
       }
     }
   }

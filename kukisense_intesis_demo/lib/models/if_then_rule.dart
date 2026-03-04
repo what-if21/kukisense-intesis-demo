@@ -165,6 +165,7 @@ class IfThenRule {
 // Default IF-THEN rules
 List<IfThenRule> getDefaultIfThenRules() {
   return [
+    // TURN ON RULES
     IfThenRule(
       id: '1',
       name: 'Hot Day - Cool Down',
@@ -190,12 +191,38 @@ List<IfThenRule> getDefaultIfThenRules() {
       threshold: 35.0,
       actions: [AcAction.turnOn, AcAction.setCoolMode, AcAction.setFanAuto],
     ),
+    
+    // TURN OFF RULES
     IfThenRule(
       id: '4',
       name: 'Comfortable Temp - Turn Off',
       sensor: SensorType.temperature,
       condition: ConditionType.lessThanOrEqual,
       threshold: 24.0,
+      actions: [AcAction.turnOff],
+    ),
+    IfThenRule(
+      id: '5',
+      name: 'Good Air Quality - Turn Off',
+      sensor: SensorType.pm25,
+      condition: ConditionType.lessThanOrEqual,
+      threshold: 15.0,
+      actions: [AcAction.turnOff],
+    ),
+    IfThenRule(
+      id: '6',
+      name: 'Low CO2 - Turn Off',
+      sensor: SensorType.co2,
+      condition: ConditionType.lessThanOrEqual,
+      threshold: 600.0,
+      actions: [AcAction.turnOff],
+    ),
+    IfThenRule(
+      id: '7',
+      name: 'Comfortable Humidity - Turn Off',
+      sensor: SensorType.humidity,
+      condition: ConditionType.lessThanOrEqual,
+      threshold: 50.0,
       actions: [AcAction.turnOff],
     ),
   ];

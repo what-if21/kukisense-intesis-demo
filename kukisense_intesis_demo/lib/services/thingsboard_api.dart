@@ -74,7 +74,10 @@ class ThingsBoardApi {
       
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return SensorReading.fromThingsBoard(data);
+        print('Telemetry data received: $data');
+        final reading = SensorReading.fromThingsBoard(data);
+        print('Parsed reading: temp=${reading.temperature}, hum=${reading.humidity}, co2=${reading.co2}');
+        return reading;
       } else if (response.statusCode == 401) {
         print('Token expired, trying to refresh...');
         if (await _refreshLogin()) {

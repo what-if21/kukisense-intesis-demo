@@ -17,6 +17,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   SensorReading? _reading;
   Map<String, dynamic>? _acStatus;
   bool _isLoading = true;
+  String? _errorMessage;
   Timer? _timer;
 
   // AC Control state
@@ -53,6 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _reading = reading;
           _acStatus = acStatus;
           _isLoading = false;
+          _errorMessage = null;
           
           // Update AC state from telemetry
           if (acStatus != null) {
@@ -66,10 +68,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           context.read<IfThenAutomationEngine>().updateSensorData(reading);
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('Error fetching data: $e');
+      print('Stack trace: $stackTrace');
       if (mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
       }
     }
   }
@@ -122,7 +128,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: _isLoading 
         ? const Center(child: CircularProgressIndicator())
         : _reading == null 
-          ? const Center(child: Text('Failed to load sensor data'))
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Failed to load sensor data'),
+                  if (_errorMessage != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      'Error: $_errorMessage',
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _fetchData,
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            )
           : RefreshIndicator(
               onRefresh: _fetchData,
               child: ListView(

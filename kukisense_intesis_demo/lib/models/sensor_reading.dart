@@ -37,23 +37,33 @@ class SensorReading {
 
   // Parse from ThingsBoard telemetry response
   factory SensorReading.fromThingsBoard(Map<String, dynamic> data) {
+    print('Parsing ThingsBoard data: $data');
+    
     double getValue(String key) {
       if (data.containsKey(key) && data[key] is List && data[key].isNotEmpty) {
         final value = data[key][0]['value'];
+        print('  $key raw value: $value (type: ${value.runtimeType})');
         if (value == null) return 0.0;
         // ThingsBoard returns values as strings
-        return double.tryParse(value.toString()) ?? 0.0;
+        final parsed = double.tryParse(value.toString()) ?? 0.0;
+        print('  $key parsed: $parsed');
+        return parsed;
       }
+      print('  $key not found or empty');
       return 0.0;
     }
 
     int getIntValue(String key) {
       if (data.containsKey(key) && data[key] is List && data[key].isNotEmpty) {
         final value = data[key][0]['value'];
+        print('  $key raw value: $value (type: ${value.runtimeType})');
         if (value == null) return 0;
         // ThingsBoard returns values as strings
-        return int.tryParse(value.toString()) ?? 0;
+        final parsed = int.tryParse(value.toString()) ?? 0;
+        print('  $key parsed: $parsed');
+        return parsed;
       }
+      print('  $key not found or empty');
       return 0;
     }
 

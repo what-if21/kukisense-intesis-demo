@@ -143,7 +143,9 @@ class ThingsBoardApi {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        print('AC status received: $data');
+        return data;
       } else if (response.statusCode == 401) {
         print('Token expired, trying to refresh...');
         if (await _refreshLogin()) {

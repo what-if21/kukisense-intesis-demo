@@ -58,10 +58,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           
           // Update AC state from telemetry
           if (acStatus != null) {
-            _acPower = _getAcValue(acStatus, 'ac_power') == true;
-            _acMode = _getAcValue(acStatus, 'ac_mode')?.toString() ?? 'cool';
-            _acSetpoint = (_getAcValue(acStatus, 'ac_setpoint') ?? 24).toDouble();
-            _acFan = _getAcValue(acStatus, 'ac_fan')?.toString() ?? 'auto';
+            _updateAcStateFromTelemetry(acStatus);
           }
         });
         if (reading != null) {
@@ -86,16 +83,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
     return null;
   }
+  
+  // Parse AC status with proper type conversion
+  void _updateAcStateFromTelemetry(Map<String, dynamic> acStatus) {
+    // Parse power - stored as string "true" or "false"
+    final powerValue = _getAcValue(acStatus, 'ac_power');
+    if (powerValue != null) {
+      _acPower = powerValue.toString().toLowerCase() == 'true';
+    }
+    
+    // Parse mode - stored as string
+    final modeValue = _getAcValue(acStatus, 'ac_mode');
+    if (modeValue != null) {
+      _acMode = modeValue.toString().toLowerCase();
+    }
+    
+    // Parse setpoint - stored with factor of 10 (e.g., 180 = 18.0°C)
+    final setpointValue = _getAcValue(acStatus, 'ac_setpoint');
+    if (setpointValue != null) {
+      final rawSetpoint = double.tryParse(setpointValue.toString()) ?? 24.0;
+      _acSetpoint = rawSetpoint / 10.0; // Divide by 10
+    }
+    
+    // Parse fan - stored as string
+    final fanValue = _getAcValue(acStatus, 'ac_fan');
+    if (fanValue != null) {
+      _acFan = fanValue.toString().toLowerCase();
+    }
+    
+    print('AC State updated: power=$_acPower, mode=$_acMode, setpoint=$_acSetpoint, fan=$_acFan');
+  }
 
   Future<void> _sendAcCommand() async {
     setState(() => _isSendingCommand = true);
     
     final api = context.read<ThingsBoardApi>();
+    // Multiply setpoint by 10 for API (e.g., 24.0 -> 240)
     final success = await api.sendAcCommand({
       'power': _acPower,
-      'mode': _acMode,
-      'setpoint': _acSetpoint.toInt(),
-      'fan': _acFan,
+      'mode': _acMode.toUpperCase(),
+      'setpoint': (_acSetpoint * 10).toInt(),
+      'fan': _acFan.toUpperCase(),
     });
     
     setState(() => _isSendingCommand = false);

@@ -39,14 +39,20 @@ class SensorReading {
   factory SensorReading.fromThingsBoard(Map<String, dynamic> data) {
     double getValue(String key) {
       if (data.containsKey(key) && data[key] is List && data[key].isNotEmpty) {
-        return (data[key][0]['value'] ?? 0.0).toDouble();
+        final value = data[key][0]['value'];
+        if (value == null) return 0.0;
+        // ThingsBoard returns values as strings
+        return double.tryParse(value.toString()) ?? 0.0;
       }
       return 0.0;
     }
 
     int getIntValue(String key) {
       if (data.containsKey(key) && data[key] is List && data[key].isNotEmpty) {
-        return (data[key][0]['value'] ?? 0).toInt();
+        final value = data[key][0]['value'];
+        if (value == null) return 0;
+        // ThingsBoard returns values as strings
+        return int.tryParse(value.toString()) ?? 0;
       }
       return 0;
     }

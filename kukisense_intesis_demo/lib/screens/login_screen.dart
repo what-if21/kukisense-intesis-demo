@@ -26,8 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
     
     setState(() => _isLoading = false);
     
-    setState(() => _isLoading = false);
-    
     if (success && mounted) {
       Navigator.pushReplacement(
         context,

@@ -52,14 +52,14 @@ class SensorReading {
     }
 
     return SensorReading(
-      temperature: getValue('temperature'),
-      humidity: getValue('humidity'),
-      co2: getIntValue('co2'),
-      pm25: getValue('pm25'),
-      pm10: getValue('pm10'),
-      pm1: getValue('pm1'),
-      pm4: getValue('pm4'),
-      tvoc: getValue('tvoc'),
+      temperature: getValue('Temp'),           // Temperature
+      humidity: getValue('RH'),                // Humidity
+      co2: getIntValue('CO2'),                 // CO2
+      pm25: getValue('PM25'),                  // PM2.5
+      pm10: getValue('PM10'),                  // PM10
+      pm1: 0.0,                                // Not available
+      pm4: 0.0,                                // Not available
+      tvoc: getValue('CH2O'),                  // Formaldehyde (CH2O)
       timestamp: DateTime.now(),
     );
   }

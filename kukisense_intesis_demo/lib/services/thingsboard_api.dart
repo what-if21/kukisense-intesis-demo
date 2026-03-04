@@ -65,7 +65,7 @@ class ThingsBoardApi {
     
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/api/plugins/telemetry/DEVICE/$iaqDeviceId/values/timeseries?keys=temperature,humidity,co2,pm25,pm10,pm1,pm4,tvoc'),
+        Uri.parse('$baseUrl/api/plugins/telemetry/DEVICE/$iaqDeviceId/values/timeseries?keys=Temp,RH,CO2,PM25,PM10,CH2O'),
         headers: {
           'X-Authorization': 'Bearer $_token',
           'Content-Type': 'application/json',

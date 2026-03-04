@@ -22,9 +22,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // AC Control state
   bool _acPower = false;
-  String _acMode = 'cool';
+  String _acMode = 'COOL';
   double _acSetpoint = 24;
-  String _acFan = 'auto';
+  String _acFan = '5';
   bool _isSendingCommand = false;
 
   @override
@@ -105,10 +105,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _acSetpoint = rawSetpoint / 10.0; // Divide by 10
     }
     
-    // Parse fan - stored as string
+    // Parse fan - can be "AUTO" or "1"-"5"
     final fanValue = _getAcValue(acStatus, 'ac_fan');
     if (fanValue != null) {
-      _acFan = fanValue.toString().toLowerCase();
+      final fanStr = fanValue.toString().toUpperCase();
+      // Handle both "AUTO" and numeric values "1"-"5"
+      if (fanStr == 'AUTO' || fanStr == 'AUTO') {
+        _acFan = 'AUTO';
+      } else {
+        // For numeric values, just use as-is (1-5)
+        _acFan = fanStr;
+      }
     }
     
     print('AC State updated: power=$_acPower, mode=$_acMode, setpoint=$_acSetpoint, fan=$_acFan');
@@ -118,13 +125,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() => _isSendingCommand = true);
     
     final api = context.read<ThingsBoardApi>();
-    // Multiply setpoint by 10 for API (e.g., 24.0 -> 240)
-    final success = await api.sendAcCommand({
+    
+    // Build params
+    final params = <String, dynamic>{
       'power': _acPower,
       'mode': _acMode.toUpperCase(),
-      'setpoint': (_acSetpoint * 10).toInt(),
-      'fan': _acFan.toUpperCase(),
-    });
+    };
+    
+    // Handle setpoint (multiply by 10)
+    params['setpoint'] = (_acSetpoint * 10).toInt();
+    
+    // Handle fan - can be AUTO or 1-5
+    if (_acFan == 'AUTO') {
+      params['fan'] = 'AUTO';
+    } else {
+      // For numeric fan speeds 1-5
+      params['fan'] = _acFan;
+    }
+    
+    print('Sending AC command: $params');
+    final success = await api.sendAcCommand(params);
     
     setState(() => _isSendingCommand = false);
     
@@ -245,11 +265,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Wrap(
                             spacing: 8,
                             children: [
-                              _buildModeButton('cool', 'Cool'),
-                              _buildModeButton('heat', 'Heat'),
-                              _buildModeButton('dry', 'Dry'),
-                              _buildModeButton('fan', 'Fan'),
-                              _buildModeButton('auto', 'Auto'),
+                              _buildModeButton('COOL', 'Cool'),
+                              _buildModeButton('HEAT', 'Heat'),
+                              _buildModeButton('DRY', 'Dry'),
+                              _buildModeButton('FAN', 'Fan'),
+                              _buildModeButton('AUTO', 'Auto'),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -288,10 +308,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Wrap(
                             spacing: 8,
                             children: [
-                              _buildFanButton('auto', 'Auto'),
-                              _buildFanButton('low', 'Low'),
-                              _buildFanButton('medium', 'Medium'),
-                              _buildFanButton('high', 'High'),
+                              _buildFanButton('1', '1'),
+                              _buildFanButton('2', '2'),
+                              _buildFanButton('3', '3'),
+                              _buildFanButton('4', '4'),
+                              _buildFanButton('5', '5'),
+                              _buildFanButton('AUTO', 'AUTO'),
                             ],
                           ),
                           
